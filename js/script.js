@@ -57,19 +57,88 @@ window.onload = function () {
     }
   };
 
+  /* ========== Section2 ON AIR 체크 ========== */
+  function checkOnAir() {
+    const slides = document.querySelectorAll('.section2 .slider .swiper-wrapper a');
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    // 각 슬라이드의 시간을 분으로 변환
+    const times = Array.from(slides).map(slide => {
+      const timeEl = slide.querySelector('.time');
+      if (!timeEl) return null;
+      const [h, m] = timeEl.textContent.trim().split(':').map(Number);
+      // 00:xx 는 자정 이후 → 분 그대로, 01:xx 이후도 동일
+      return h * 60 + m;
+    });
+
+    let onAirIndex = -1;
+    for (let i = 0; i < times.length; i++) {
+      if (times[i] === null) continue;
+      const current = times[i];
+      // 다음 슬라이드 시간 (없으면 +120분 가정)
+      const next = times[i + 1] !== undefined && times[i + 1] !== null
+        ? times[i + 1]
+        : current + 120;
+      if (currentMinutes >= current && currentMinutes < next) {
+        onAirIndex = i;
+        break;
+      }
+    }
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('on-air', i === onAirIndex);
+    });
+
+    if (onAirIndex !== -1) {
+  const onAirSlide = slides[onAirIndex];
+  const timeEl = onAirSlide.querySelector('.time');
+  const startTime = timeEl.dataset.start || timeEl.textContent.trim();
+
+  // 원본 시간 저장 (최초 1회)
+  if (!timeEl.dataset.start) {
+    timeEl.dataset.start = startTime;
+  }
+
+  // 다음 슬라이드 시간 = 종료 시간
+  const nextTimeEl = slides[onAirIndex + 1]?.querySelector('.time');
+  if (nextTimeEl) {
+    timeEl.textContent = `${startTime} ~ ${nextTimeEl.textContent.trim()}`;
+  }
+} else {
+  // on-air 아닐 때 원본 시간으로 복원
+  slides.forEach(slide => {
+    const timeEl = slide.querySelector('.time');
+    if (timeEl?.dataset.start) {
+      timeEl.textContent = timeEl.dataset.start;
+    }
+  });
+}
+
+    // ON AIR 슬라이드를 맨 앞으로
+    if (onAirIndex !== -1) {
+      section2Swiper.slideTo(onAirIndex);
+    }
+  }
+
   /* ========== Section2 슬라이드 ========== */
-  new Swiper('.section2 .slider', {
+  const section2Swiper = new Swiper('.section2 .slider', {
     slidesPerView: 'auto',
     spaceBetween: 32,
     navigation: {
       prevEl: '.section2 .s_btn .left',
       nextEl: '.section2 .s_btn .right',
+
     },
     breakpoints: {
       0: { spaceBetween: 12 },
       1025: { spaceBetween: 32 },
     },
   });
+
+  // section2Swiper 초기화 이후에 호출
+  checkOnAir();
+  setInterval(checkOnAir, 60000); // 1분마다 갱신
 
   /* ========== Section3 드롭다운 ========== */
   const downSpans = document.querySelectorAll('.down_btn span');
@@ -251,33 +320,3 @@ window.onload = function () {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
