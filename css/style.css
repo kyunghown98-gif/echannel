@@ -706,7 +706,7 @@ main {
 .section2 .slider .swiper-wrapper a.on-air::before {
    content: "● ON AIR";
     position: absolute;
-    top: 16px;
+    top: 0;
     left: auto;         
     right: 16px;       
     transform: none;     
@@ -716,7 +716,6 @@ main {
     font-weight: 900;
     letter-spacing: 1px;
     padding: 6px 14px;
-    border-radius: 20px;
     z-index: 5;
 }
 
@@ -747,6 +746,7 @@ main {
     position: absolute;
     top: 32px;
     left: 28px;
+    z-index: 3;
 }
 
 .section2 .slider .swiper-wrapper a .infor img {
@@ -788,11 +788,16 @@ main {
     left: 0;
     border-radius: 15px;
 }
-.section2 .slider .swiper-wrapper a.on-air .infor .time {
-    top: 152px;
+.section2 .slider .swiper-wrapper a.on-air .infor .time{
+    position: relative;
+    top: 0;
+    left: 0;
 }
 .section2 .slider .swiper-wrapper a.on-air .infor .i_title{
-    font-size: 2.3rem;
+    font-size: 34px;
+}
+.section2 .slider .swiper-wrapper a.on-air .infor img{
+    display: none;
 }
 
 
@@ -2532,6 +2537,11 @@ footer .footer_bottom .inner ul {
     .section2 .title .s_btn {
         gap: 12px;
     }
+
+    .section2 .slider .swiper-wrapper a.on-air .infor .i_title{
+    font-size: 20px;
+}
+
 
     /* Section 3 */
     .section3 .search .left,
